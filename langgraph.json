@@ -12,7 +12,9 @@
             "fastapi",
             "uvicorn",
             "python-dotenv",
-            "redis>=5.0.1"
+            "redis>=5.0.1",
+            "pytest>=7.0.0",
+            "httpx>=0.24.0"
         ]
     },
     "graphs": {
