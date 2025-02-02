@@ -16,13 +16,9 @@
     },
     "graphs": {
         "chat": {
-            "module": "main",
-            "graph": "graph",
+            "import": "main:graph",
             "description": "A simple chat agent that can engage in conversations",
-            "config": {
-                "type": "state_graph",
-                "entry_point": "main:graph"
-            }
+            "type": "state_graph"
         }
     }
 }
