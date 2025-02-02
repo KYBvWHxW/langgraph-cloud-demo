@@ -1,0 +1,21 @@
+{
+    "project": {
+        "name": "simple_chat_agent",
+        "description": "A simple chat agent using LangGraph"
+    },
+    "server": {
+        "host": "139.59.244.95",
+        "port": 8123
+    },
+    "deployment": {
+        "entry_point": "main:graph",
+        "python_version": "3.10",
+        "requirements": [
+            "langchain>=0.0.350",
+            "openai>=1.0.0",
+            "langgraph>=0.0.10",
+            "fastapi",
+            "uvicorn"
+        ]
+    }
+}
