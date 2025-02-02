@@ -1,4 +1,5 @@
 # LangGraph Cloud Demo
+# (LangGraph Cloud Application Example)
 
 这是一个简单的 LangGraph 应用示例，用于部署到 LangChain 云平台。
 
