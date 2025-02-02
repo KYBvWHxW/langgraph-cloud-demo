@@ -1,16 +1,15 @@
-from fastapi import FastAPI, HTTPException, Request, Response
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
-from fastapi.routing import APIRoute
-from fastapi.middleware.trustedhost import TrustedHostMiddleware
-from pydantic import BaseModel, Field
-import uvicorn
-from main import graph
-from typing import List, Optional, Dict, Any, Callable
-from datetime import datetime
-import logging
-import traceback
-import uuid
+from server.main import app
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(
+        app,
+        host="0.0.0.0",
+        port=8123,
+        log_level="info",
+        proxy_headers=True,
+        forwarded_allow_ips="*"
+    )
 
 # 配置日志
 logging.basicConfig(level=logging.INFO)

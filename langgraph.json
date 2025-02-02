@@ -8,15 +8,18 @@
         "requirements": [
             "langchain>=0.0.350",
             "openai>=1.0.0",
-            "langgraph>=0.0.10",
+            "langgraph==0.0.11",
             "fastapi",
             "uvicorn",
-            "python-dotenv"
+            "python-dotenv",
+            "redis>=5.0.1",
+            "pytest>=7.0.0",
+            "httpx>=0.24.0"
         ]
     },
     "graphs": {
         "chat": {
-            "import": "main:graph",
+            "import": "./main:graph",
             "description": "A simple chat agent that can engage in conversations",
             "type": "state_graph"
         }
