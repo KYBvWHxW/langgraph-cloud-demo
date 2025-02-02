@@ -1,7 +1,8 @@
 {
-    "name": "simple_chat_agent",
-    "description": "A simple chat agent using LangGraph",
-    "entry_point": "main:graph",
+    "project": {
+        "name": "simple_chat_agent",
+        "description": "A simple chat agent using LangGraph"
+    },
     "dependencies": {
         "python": "3.10",
         "requirements": [
@@ -17,7 +18,11 @@
         "chat": {
             "module": "main",
             "graph": "graph",
-            "description": "A simple chat agent that can engage in conversations"
+            "description": "A simple chat agent that can engage in conversations",
+            "config": {
+                "type": "state_graph",
+                "entry_point": "main:graph"
+            }
         }
     }
 }
