@@ -1,12 +1,12 @@
+import logging
+import traceback
 from fastapi import FastAPI, Request, Response, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.routing import APIRoute
-import logging
-import traceback
+from main import graph
 from .routes import router as main_router
 from .langsmith import router as langsmith_router
-from main import graph
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -46,10 +46,11 @@ app.add_middleware(
     max_age=1800,
 )
 
-from .middleware import add_cors_headers, catch_exceptions_middleware
+from .middleware import add_cors_headers, catch_exceptions_middleware, RateLimiter
 
 app.middleware("http")(add_cors_headers)
 app.middleware("http")(catch_exceptions_middleware)
+app.middleware("http")(RateLimiter())
 
 app.include_router(main_router)
 app.include_router(langsmith_router)
