@@ -5,6 +5,7 @@ import uuid
 import logging
 import traceback
 from .models import Assistant, Thread, Message, Deployment
+from .cache import cache_response
 
 logger = logging.getLogger(__name__)
 
@@ -27,6 +28,7 @@ default_assistant = Assistant(
 assistants[default_assistant["id"]] = default_assistant
 
 @router.get("/v1/assistants")
+@cache_response(expire=300)  # Cache for 5 minutes
 async def list_assistants():
     logger.info("Listing assistants")
     return {"data": list(assistants.values())}
@@ -38,6 +40,7 @@ async def create_assistant(assistant: Assistant):
     return assistant.dict()
 
 @router.get("/v1/assistants/{assistant_id}")
+@cache_response(expire=300)  # Cache for 5 minutes
 async def get_assistant(assistant_id: str):
     logger.info(f"Getting assistant: {assistant_id}")
     if assistant_id not in assistants:
