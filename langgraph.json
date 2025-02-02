@@ -12,5 +12,12 @@
             "uvicorn",
             "python-dotenv"
         ]
+    },
+    "graphs": {
+        "chat": {
+            "module": "main",
+            "graph": "graph",
+            "description": "A simple chat agent that can engage in conversations"
+        }
     }
 }
