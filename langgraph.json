@@ -4,9 +4,9 @@
         "description": "A simple chat agent using LangGraph"
     },
     "dependencies": [
-        "langchain>=0.0.350",
+        "langchain>=0.3.8",
         "openai>=1.0.0",
-        "langgraph==0.0.11",
+        "langgraph>=0.2.69",
         "fastapi",
         "uvicorn",
         "python-dotenv",
