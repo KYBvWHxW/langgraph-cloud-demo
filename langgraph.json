@@ -3,20 +3,18 @@
         "name": "simple_chat_agent",
         "description": "A simple chat agent using LangGraph"
     },
-    "dependencies": {
-        "python": "3.12",
-        "requirements": [
-            "langchain>=0.0.350",
-            "openai>=1.0.0",
-            "langgraph==0.0.11",
-            "fastapi",
-            "uvicorn",
-            "python-dotenv",
-            "redis>=5.0.1",
-            "pytest>=7.0.0",
-            "httpx>=0.24.0"
-        ]
-    },
+    "dependencies": [
+        "langchain>=0.0.350",
+        "openai>=1.0.0",
+        "langgraph==0.0.11",
+        "fastapi",
+        "uvicorn",
+        "python-dotenv",
+        "redis>=5.0.1",
+        "pytest>=7.0.0",
+        "httpx>=0.24.0"
+    ],
+    "python_version": "3.12",
     "graphs": {
         "chat": "main:graph"
     }
