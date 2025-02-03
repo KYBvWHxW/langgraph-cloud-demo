@@ -6,7 +6,7 @@
     "dependencies": [
         "langchain>=0.0.350",
         "openai>=1.0.0",
-        "langgraph==0.0.11",
+        "langgraph>=0.2.69",
         "fastapi",
         "uvicorn",
         "python-dotenv",
