@@ -3,19 +3,37 @@
         "name": "simple_chat_agent",
         "description": "A simple chat agent using LangGraph"
     },
-    "dependencies": [
-        "langchain>=0.3.8",
-        "openai>=1.0.0",
-        "langgraph>=0.2.69",
-        "fastapi",
-        "uvicorn",
-        "python-dotenv",
-        "redis>=5.0.1",
-        "pytest>=7.0.0",
-        "httpx>=0.24.0"
-    ],
-    "python_version": "3.12",
+    "dependencies": {
+        "python": "3.12",
+        "requirements": [
+            "langchain>=0.3.8",
+            "openai>=1.0.0",
+            "langgraph>=0.2.69",
+            "fastapi",
+            "uvicorn",
+            "python-dotenv",
+            "redis>=5.0.1",
+            "pytest>=7.0.0",
+            "httpx>=0.24.0",
+            "langchain-openai>=0.0.2"
+        ]
+    },
     "graphs": {
-        "chat": "main:graph"
+        "chat": {
+            "import": "main:graph",
+            "description": "A simple chat agent that can engage in conversations",
+            "type": "state_graph",
+            "config": {
+                "state_type": "main:GraphState",
+                "nodes": {
+                    "generate_response": {
+                        "description": "Generate AI response using OpenAI"
+                    },
+                    "decide_next_step": {
+                        "description": "Decide whether to continue the conversation or end"
+                    }
+                }
+            }
+        }
     }
 }

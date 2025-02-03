@@ -1,16 +1,23 @@
-from typing import TypedDict, Annotated, Union, Dict, Any
-from langgraph.graph import Graph, END
+from typing import Dict, TypedDict, Sequence, Literal
+from langchain_core.messages import BaseMessage, HumanMessage, AIMessage
 from langchain_openai import ChatOpenAI
-from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
+from langgraph.graph import StateGraph, END
+import os
+from dotenv import load_dotenv
+
+# 加载环境变量
+load_dotenv()
 
 # 定义状态类型
-class AgentState(TypedDict):
-    messages: Annotated[list[HumanMessage | AIMessage], "对话历史"]
-    next: Annotated[str, "下一个节点"]
+class GraphState(TypedDict):
+    messages: Sequence[BaseMessage]
+    next: str
 
-# 创建 LLM
-def create_llm():
-    return ChatOpenAI(temperature=0)
+# 创建 OpenAI 聊天模型
+model = ChatOpenAI(
+    model="gpt-3.5-turbo",
+    temperature=0
+)
 
 # 系统提示
 SYSTEM_PROMPT = """你是一个专业的 AI 助手，特别擅长解释技术概念。以下是一些关键技术的准确定义：
@@ -27,43 +34,62 @@ LangGraph：
 
 请基于这些准确的定义来回答用户的问题。"""
 
+# 定义节点函数
+def generate_response(state: GraphState) -> GraphState:
+    """生成 AI 的回复"""
+    # 如果是新对话，添加系统提示
+    if not state["messages"]:
+        state["messages"].append(SystemMessage(content=SYSTEM_PROMPT))
+    
+    # 调用 LLM
+    response = model.invoke(state["messages"])
+    # 添加到消息历史
+    return {
+        "messages": [*state["messages"], response],
+        "next": "decide_next_step"
+    }
+
+def decide_next_step(state: GraphState) -> Literal["generate_response", "end"]:
+    """决定下一步操作"""
+    last_message = state["messages"][-1]
+    
+    # 如果最后一条消息是用户的，继续对话
+    if isinstance(last_message, HumanMessage):
+        return "generate_response"
+    # 如果最后一条消息是 AI 的，结束对话
+    return "end"
+
 # 处理用户输入
 def user_message(state: Dict[str, Any]) -> Dict[str, Any]:
     messages = state.get("messages", [])
-    if not messages:
-        # 如果是新对话，添加系统提示
-        messages.append(SystemMessage(content=SYSTEM_PROMPT))
-    
     message = state.get("message", "")
     messages.append(HumanMessage(content=message))
-    return {"messages": messages, "next": "ai_response"}
-
-# AI 响应
-def ai_response(state: Dict[str, Any]) -> Dict[str, Any]:
-    llm = create_llm()
-    response = llm.invoke(state["messages"])
-    messages = state["messages"]
-    messages.append(response)
-    # 一轮对话后结束
-    return {"messages": messages, "next": END}
+    return {"messages": messages, "next": "generate_response"}
 
 # 创建图
-def build_graph():
-    # 创建工作流程图
-    workflow = Graph()
-
+def build_graph() -> StateGraph:
+    """构建对话图"""
+    # 创建工作流
+    workflow = StateGraph(GraphState)
+    
     # 添加节点
+    workflow.add_node("generate_response", generate_response)
     workflow.add_node("user_message", user_message)
-    workflow.add_node("ai_response", ai_response)
-
-    # 设置边
-    workflow.add_edge("user_message", "ai_response")
-    workflow.add_edge("ai_response", END)
-
-    # 设置入口
+    
+    # 添加条件边
+    workflow.add_conditional_edges(
+        "decide_next_step",
+        decide_next_step,
+        {
+            "generate_response": "generate_response",
+            "end": END
+        }
+    )
+    
+    # 设置入口节点
     workflow.set_entry_point("user_message")
+    
+    return workflow
 
-    return workflow.compile()
-
-# 导出图实例
-graph = build_graph()
+# 创建图实例
+graph = build_graph().compile()
